@@ -136,8 +136,6 @@ try:
 
                     
                 result, search_data = mail.search( None, '(SINCE "' + date_str + '" FROM "' + email_filter + '" SUBJECT "' + subject_filter + '")')
-            print(139,result)
-            print (140, search_data)
 
             if len(search_data[0].split()) > 0 :
                 
@@ -154,11 +152,8 @@ try:
                     
                     typ, response_data = mail.fetch(num, '(RFC822)')
     
-                    #print(157, response_data[0])
     
                     if isinstance(response_data[0], tuple):
-                        print (160, response_data[0])
-    
                         msg = email.message_from_bytes(response_data[0][1])
                         subject = msg['subject']
                         from_email = msg['From'].split('<')[len(msg['From'].split('<'))-1].split('>')[0]
@@ -169,66 +164,27 @@ try:
                         try:
                             soup = BeautifulSoup(response_data[0][1].decode(), "html.parser")
                             body = soup.find('div').text
-                            print (172,body)
                         except:
                             body = None
     
                         if body == None:
-                            print (177,"I am hear")
                             if msg.is_multipart():
-                                print(179, 'I ma here')
                                 for part in msg.walk():
-                                    print (181, "I am here")
                                     ctype = part.get_content_type()
                                     cdispo = str(part.get('Content-Disposition'))
     
                                 # skip any text/plain (txt) attachments
                                 if ctype == 'text/plain' and 'attachment' not in cdispo:
-                                    print(187, 'I am here')
                                     body = part.get_payload(decode=True)  # decode
     
     
                             # not multipart - i.e. plain text, no attachments, keeping fingers crossed
                             else:
-                                print(193, "I am here")
                                 body = msg.get_payload(decode=True)
-                                print(191,"i am here")
     
                         if body == None:
-                            print (198, "I am here")
                             continue
     
-                        # openai.api_key = openai_secret_key
-                        # response = openai.Completion.create(
-                        #     engine="text-davinci-003", 
-                        #     prompt= row[2] + body,
-                        #     temperature=0.9,
-                        #     max_tokens=1024,
-                        #     top_p=1,
-                        #     frequency_penalty=0,
-                        #     presence_penalty=0.6,
-                        #     n=1,
-                        # )
-    
-                        # message_to_send = response['choices'][0]['text']
-
-                        # openai.api_key = openai_secret_key
-                        # response = openai.ChatCompletion.create(
-                        #     model="gpt-3.5-turbo",
-                        #     messages=[
-                        #         {"role": "system", "content": "You are a helpful assistant."},
-                        #         {"role": "user", "content": row[2] + body}
-                        #     ],
-                        #     temperature=0.9,
-                        #     max_tokens=1024,
-                        #     top_p=1,
-                        #     frequency_penalty=0,
-                        #     presence_penalty=0.6,
-                        #     )
-                        
-
-                        # message_to_send = response['choices'][0]['message']['content']
-
                         try:
                             openai.api_key = openai_secret_key
                             response = openai.ChatCompletion.create(
@@ -244,11 +200,8 @@ try:
                                 presence_penalty=0.6
                             )
 
-                            #message_to_send = response['choices'][0]['message']['content']
-                            message_to_send = "it is my hand made message"
-
-                            print(message_to_send)
-
+                            message_to_send = response['choices'][0]['message']['content']
+                            
                         except openai.APIConnectionError as e:
                             print(f"Connection error: {e}")
                         except openai.APITimeoutError as e:
@@ -317,11 +270,3 @@ finally:
         mail.logout()
     except:
         pass
-
-# if __name__ == "__main__":
-#     send_gmail(
-#         sender_address=gmail_address,
-#         receiver_address= 'ivmv@ukr.net',
-#         mail_subject='Test Subject',
-#         mail_content='This is a last test email.',
-#     ) 
