@@ -51,7 +51,7 @@ class EmailAutoResponder:
         self.sg = sendgrid.SendGridAPIClient(api_key=self.sendgrid_api_key)
         
         # List of sender emails for round-robin
-        self.from_emails = ["mykhailoivanov97@gmail.com", "imvm2007@gmail.com"]
+        self.from_emails = ["mykhailoivanov97@gmail.com", "ivmv2007@gmail.com"]
         self.current_sender_index = 0
 
         logging.info('57, Initiating chatgpt gmail script...')
