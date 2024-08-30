@@ -24,13 +24,9 @@ import csv
 base_dir = os.path.dirname(sys.executable if getattr(sys, 'frozen', False) else __file__)
 parent_dir = os.path.dirname(base_dir)
 
-
-
-
-
 # file paths
 #script_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
-env_file_path = os.path.join(base_dir, 'settings.env')
+env_file_path = os.path.join(base_dir, '.env')
 load_dotenv(env_file_path)
 prompt_settings_file_path = os.path.join(base_dir, 'prompt_settings.csv')
 
@@ -245,17 +241,14 @@ try:
                                 print('this email has been moved to the gpt-auto-replied inbox')
     
                         except Exception as e:
-                            print(e)
-                        
-                        
+                            print(e)                       
     
                         #send email
                         try:
                             send_gmail(gmail_address, from_email, subject, message_to_send)
                             # print('sending email')
                         except Exception as e:
-                            print(e)
-    
+                            print(e) 
     
         mail.logout()
         sleep(int(check_every_n_seconds))
