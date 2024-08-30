@@ -1,41 +1,19 @@
-2024-08-30 12:06:24,308 - DEBUG - 72,Loaded prompt settings: [['filter_type', 'filters', 'chatgpt_prompt'], ['1', 'ivmv2007@gmail.com', "Your name is {John Brown} and you are acting as a {HR manager}. Please respond to the following email in a short and professional manner. Please don't promise any immediate actions but provide reassurance that the email is received and that you will get back to them at a later time"], ['2', 'Available candidates', "Your name is {John Brown} and you are acting as a {HR manager}. Please respond to the following email in a short and professional manner. Please don't promise any immediate actions but provide reassurance that the email is received and that you will get back to them at a later time"], ['3', 'ivmv2007@gmail.com; Available candidates', "Your name is {John Brown} and you are acting as a {HR manager}. Please respond to the following email in a short and professional manner. Please don't promise any immediate actions but provide reassurance that the email is received and that you will get back to them at a later time"], ['1', 'ivmv@ukr.net', "Your name is {John Brown} and you are acting as a {HR manager}. Please respond to the following email in a short and professional manner. Please don't promise any immediate actions but provide reassurance that the email is received and that you will get back to them at a later time"]]/n
-2024-08-30 12:06:24,329 - INFO - 64, Init is done.
-2024-08-30 12:06:24,329 - INFO - 95 Checking inbox every 0.5 minutes...
-2024-08-30 12:06:25,076 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:06:25,197 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:06:25,297 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:06:25,407 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:06:55,493 - INFO - 95 Checking inbox every 0.5 minutes...
-2024-08-30 12:06:56,216 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:06:56,330 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:06:56,431 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:06:56,530 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:07:26,613 - INFO - 95 Checking inbox every 0.5 minutes...
-2024-08-30 12:07:27,393 - DEBUG - 130 Search data: [b'375']
-2024-08-30 12:07:27,894 - DEBUG - message='Request to OpenAI API' method=post path=https://api.openai.com/v1/chat/completions
-2024-08-30 12:07:27,894 - DEBUG - api_version=None data='{"model": "gpt-3.5-turbo", "messages": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "Your name is {John Brown} and you are acting as a {HR manager}. Please respond to the following email in a short and professional manner. Please don\'t promise any immediate actions but provide reassurance that the email is received and that you will get back to them at a later time=C2=A0 hello test 4,it looks like ever=\\r\\nything is ok. Can you give a feedback?kr,test 4"}], "temperature": 0.9, "max_tokens": 1024, "top_p": 1, "frequency_penalty": 0, "presence_penalty": 0.6}' message='Post details'
-2024-08-30 12:07:27,894 - DEBUG - Converted retries value: 2 -> Retry(total=2, connect=None, read=None, redirect=None, status=None)
-2024-08-30 12:07:27,894 - DEBUG - Starting new HTTPS connection (1): api.openai.com:443
-2024-08-30 12:07:29,065 - DEBUG - https://api.openai.com:443 "POST /v1/chat/completions HTTP/11" 200 None
-2024-08-30 12:07:29,065 - DEBUG - message='OpenAI API response' path=https://api.openai.com/v1/chat/completions processing_ms=627 request_id=req_5632245b80008054225550878512a585 response_code=200
-2024-08-30 12:07:29,080 - INFO - 183, Generated response from ChatGPT
-2024-08-30 12:07:29,081 - DEBUG - 78 ,Next sender email for sendgrid: mykhailoivanov97@gmail.com
-2024-08-30 12:07:29,121 - DEBUG - POST Request: https://api.sendgrid.com/v3/mail/send
-2024-08-30 12:07:29,121 - DEBUG - PAYLOAD: b'{"from": {"email": "mykhailoivanov97@gmail.com"}, "subject": "Re: test 4", "personalizations": [{"to": [{"email": "ivmv2007@gmail.com"}]}], "content": [{"type": "text/plain", "value": "Subject: Re: Feedback Request\\n\\nDear [Sender],\\n\\nThank you for reaching out. I have received your email regarding feedback. I will review the information and get back to you at a later time.\\n\\nBest regards,\\nJohn Brown\\nHR Manager"}]}'
-2024-08-30 12:07:29,121 - DEBUG - HEADERS: {'Authorization': 'Bearer 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', 'User-agent': 'sendgrid/6.11.0;python', 'Accept': 'application/json', 'Content-type': 'application/json'}
-2024-08-30 12:07:29,748 - DEBUG - POST Response: 202 b''
-2024-08-30 12:07:29,748 - INFO - 88, Sent email to ivmv2007@gmail.com with subject: test 4. Response: 202
-2024-08-30 12:07:30,659 - INFO - 144, Search resalts hendeled.
-2024-08-30 12:07:30,763 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:07:30,872 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:07:30,971 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:08:01,057 - INFO - 95 Checking inbox every 0.5 minutes...
-2024-08-30 12:08:01,992 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:08:02,096 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:08:02,201 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:08:02,298 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:08:32,383 - INFO - 95 Checking inbox every 0.5 minutes...
-2024-08-30 12:08:33,125 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:08:33,234 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:08:33,328 - DEBUG - 130 Search data: [b'']
-2024-08-30 12:08:33,438 - DEBUG - 130 Search data: [b'']
+2024-08-30 13:49:28,251 - INFO - 64, Init is done.
+2024-08-30 13:49:28,251 - INFO - 95 Checking inbox every 0.5 minutes...
+2024-08-30 13:49:59,312 - INFO - 95 Checking inbox every 0.5 minutes...
+2024-08-30 13:50:30,376 - INFO - 95 Checking inbox every 0.5 minutes...
+2024-08-30 13:51:01,389 - INFO - 95 Checking inbox every 0.5 minutes...
+2024-08-30 13:51:32,448 - INFO - 95 Checking inbox every 0.5 minutes...
+2024-08-30 13:52:03,549 - INFO - 95 Checking inbox every 0.5 minutes...
+2024-08-30 13:52:34,592 - INFO - 95 Checking inbox every 0.5 minutes...
+2024-08-30 13:53:09,478 - INFO - 95 Checking inbox every 0.5 minutes...
+2024-08-30 13:53:11,711 - INFO - 183, Generated response from ChatGPT
+2024-08-30 13:53:12,357 - INFO - 88, Sent email to ivmv2007@gmail.com with subject: SG 10. Response: 202
+2024-08-30 13:53:13,203 - INFO - 144, Search resalts hendeled.
+2024-08-30 13:53:43,579 - INFO - 95 Checking inbox every 0.5 minutes...
+2024-08-30 13:54:14,599 - INFO - 95 Checking inbox every 0.5 minutes...
+2024-08-30 13:54:16,776 - INFO - 183, Generated response from ChatGPT
+2024-08-30 13:54:17,011 - INFO - 88, Sent email to ivmv2007@gmail.com with subject: SG 11. Response: 202
+2024-08-30 13:54:17,869 - INFO - 144, Search resalts hendeled.
+2024-08-30 13:54:48,250 - INFO - 95 Checking inbox every 0.5 minutes...
+2024-08-30 13:55:19,262 - INFO - 95 Checking inbox every 0.5 minutes...

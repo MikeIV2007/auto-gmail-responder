@@ -17,7 +17,7 @@ import logging  # Import the logging module
 
 # Configure logging
 logging.basicConfig(
-    level=logging.DEBUG,  # Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    level=logging.INFO,  # Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
     format='%(asctime)s - %(levelname)s - %(message)s',  # Customize the log message format
     handlers=[
         logging.FileHandler("email_autoresponder.log",  mode="w"),  # Log to a file with mode "w"(rewrite)
@@ -36,12 +36,12 @@ class EmailAutoResponder:
         load_dotenv(self.env_file_path)
         
         # Configurations
-        self.openai_secret_key = os.getenv('openai_secret_key')
-        self.gmail_address = os.getenv('gmail_address')
-        self.gmail_app_password = os.getenv('gmail_app_password')
+        self.openai_secret_key = os.getenv('OPENAI_SECRET_KEY')
+        self.gmail_address = os.getenv('GMAIL_ADDRESS')
+        self.gmail_app_password = os.getenv('GMAIL_APP_PASSWORD')
         self.gpt_auto_replied = 'gpt-auto-replied'
-        self.check_every_n_seconds = int(os.getenv('check_every_n_seconds', 300))  # Default to 5 minutes if not set
-        self.how_many_days_ago = int(os.getenv('how_many_days_ago', 0))  # Default to check today's emails only
+        self.check_every_n_seconds = int(os.getenv('CHECK_EVERY_N_SECONDS', 300))  # Default to 5 minutes if not set
+        self.how_many_days_ago = int(os.getenv('HOW_MANY_DAYS_AGO', 0))  # Default to check today's emails only
         
         # Load prompt settings from CSV
         self.prompt_settings = self.load_prompt_settings()
@@ -52,7 +52,7 @@ class EmailAutoResponder:
         
         # List of sender emails for round-robin
         # Get from_emails as a list from the .env file
-        from_emails_string = os.getenv('from_emails')
+        from_emails_string = os.getenv('FROM_EMAILS')
         if from_emails_string:
             self.from_emails = [email.strip() for email in from_emails_string.split(',')]
         else:
