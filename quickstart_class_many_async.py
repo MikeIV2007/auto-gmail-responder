@@ -19,6 +19,9 @@ class AsyncSendGridEmailSender:
         load_dotenv(env_file_path)
         # Retrieve the SendGrid API key from environment variables
         self.api_key = os.environ.get('SENDGRID_API_KEY')
+        # or
+        # self.api_key = os.getenv('SENDGRID_API_KEY')
+        
         # SendGrid base URL
         self.base_url = "https://api.sendgrid.com/v3/mail/send"
         # HTTP headers for SendGrid API

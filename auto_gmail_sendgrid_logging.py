@@ -13,6 +13,17 @@ from dotenv import load_dotenv
 import csv
 import sendgrid
 from sendgrid.helpers.mail import Mail, Email, To, Content
+import logging  # Import the logging module
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,  # Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format='%(asctime)s - %(levelname)s - %(message)s',  # Customize the log message format
+    handlers=[
+        logging.FileHandler("email_autoresponder.log",  mode="w"),  # Log to a file with mode "w"(rewrite)
+        logging.StreamHandler(sys.stdout)  # Also log to the console
+    ]
+)
 
 class EmailAutoResponder:
     def __init__(self):
@@ -40,11 +51,12 @@ class EmailAutoResponder:
         self.sg = sendgrid.SendGridAPIClient(api_key=self.sendgrid_api_key)
         
         # List of sender emails for round-robin
-        self.from_emails = ["mykhailoivanov97@gmail.com"]
+        self.from_emails = ["mykhailoivanov97@gmail.com", "imvm2007@gmail.com"]
         self.current_sender_index = 0
 
-        print('initiating chatgpt gmail script...')
+        logging.info('57, Initiating chatgpt gmail script...')
         self.check_minutes = round(self.check_every_n_seconds / 60, 1)
+        logging.info('59, Init is done.')
 
     def load_prompt_settings(self):
         prompt_settings = []
@@ -52,12 +64,13 @@ class EmailAutoResponder:
             reader = csv.reader(csvfile)
             for row in reader:
                 prompt_settings.append(row)
+        logging.debug(f'67,Loaded prompt settings: {prompt_settings}/n')
         return prompt_settings
 
     def get_next_sender_email(self):
-        # Get the next sender email in round-robin fashion
         email = self.from_emails[self.current_sender_index]
         self.current_sender_index = (self.current_sender_index + 1) % len(self.from_emails)
+        logging.debug(f'72 ,Next sender email for sendgrid: {email}')
         return email
 
     def send_gmail(self, receiver_address, mail_subject, mail_content):
@@ -72,14 +85,14 @@ class EmailAutoResponder:
         
         try:
             response = self.sg.send(message)
-            print(f"Sent email to {receiver_address} with subject: {mail_subject}. Response: {response.status_code}")
+            logging.info(f"88, Sent email to {receiver_address} with subject: {mail_subject}. Response: {response.status_code}")
         except Exception as e:
-            print(f"Error sending email via SendGrid: {e}")
+            logging.error(f"90, Error sending email via SendGrid: {e}")
 
     def check_emails(self):
         while True:
             try:
-                print(f'Checking inbox every {self.check_minutes} minutes...')
+                logging.info(f'95 Checking inbox every {self.check_minutes} minutes...')
                 
                 gmail_host = "imap.gmail.com"
                 mail = imaplib.IMAP4_SSL(gmail_host)
@@ -96,7 +109,7 @@ class EmailAutoResponder:
                 mail.logout()
                 sleep(self.check_every_n_seconds)
             except Exception as e:
-                print(f"An error occurred: {e}")
+                logging.error(f"112, An error occurred: {e}")
                 input("Please exit the window and restart the program...")
                 break
 
@@ -115,6 +128,7 @@ class EmailAutoResponder:
             email_filter = row[1].split(';')[0].strip()
             subject_filter = ';'.join(row[1].split(';')[1:]).strip()
             _, search_data = mail.search(None, f'(SINCE "{date_str}" FROM "{email_filter}" SUBJECT "{subject_filter}")')
+        logging.debug(f'130 Search data: {search_data}')
         return search_data
 
     def handle_search_results(self, row, mail, search_data):
@@ -127,12 +141,14 @@ class EmailAutoResponder:
                     message_to_send = self.get_chatgpt_response(row, body)
                     if message_to_send:
                         self.send_response_email(msg, message_to_send, mail, num)
+        logging.info(f"144, Search resalts hendeled.")
 
     def get_email_body(self, response_data):
         try:
             soup = BeautifulSoup(response_data[0][1].decode(), "html.parser")
             return soup.find('div').text
-        except:
+        except Exception as e:
+            logging.warning(f"Error parsing email body: {e}")
             pass
 
         msg = email.message_from_bytes(response_data[0][1])
@@ -141,8 +157,11 @@ class EmailAutoResponder:
                 ctype = part.get_content_type()
                 cdispo = str(part.get('Content-Disposition'))
                 if ctype == 'text/plain' and 'attachment' not in cdispo:
+                    logging.info("160, message is multipart")
                     return part.get_payload(decode=True)
+                
         else:
+            logging.info("160, message is not multipart")
             return msg.get_payload(decode=True)
         return None
 
@@ -161,11 +180,12 @@ class EmailAutoResponder:
                 frequency_penalty=0,
                 presence_penalty=0.6
             )
+            logging.info('183, Generated response from ChatGPT')
             return response['choices'][0]['message']['content']
         except openai.OpenAIError as e:
-            print(f"OpenAI error: {e}")
+            logging.error(f"186, OpenAI error: {e}")
         except Exception as e:
-            print(f"Unexpected error: {e}")
+            logging.error(f"188, Unexpected error: {e}")
         return None
 
     def send_response_email(self, msg, message_to_send, mail, num):
@@ -174,8 +194,9 @@ class EmailAutoResponder:
         try:
             self.send_gmail(from_email, subject, message_to_send)
             self.move_email_to_folder(mail, num, self.gpt_auto_replied)
+            logging.debug(f"197, response email sent to", mail)
         except Exception as e:
-            print(f"Error sending response: {e}")
+            logging.error(f"199, Error sending response: {e}")
 
     def move_email_to_folder(self, mail, num, folder_name):
         try:
@@ -184,10 +205,10 @@ class EmailAutoResponder:
             result = mail.uid('COPY', uid.encode(), folder_name)
             if result[0] == 'OK':
                 mail.uid('STORE', uid.encode(), '+FLAGS', r'(\Deleted)')
-                mail.expunge()
-                print('This email has been moved to the gpt-auto-replied folder')
+                mail
         except Exception as e:
-            print(f"Error moving email: {e}")
+            # print(f"Error moving email: {e}")
+            logging.error(f"211, Error moving email: {e}")
 
 if __name__ == "__main__":
     responder = EmailAutoResponder()
