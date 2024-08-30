@@ -36,12 +36,12 @@ class EmailAutoResponder:
         load_dotenv(self.env_file_path)
         
         # Configurations
-        self.openai_secret_key = os.getenv('openai_secret_key')
-        self.gmail_address = os.getenv('gmail_address')
-        self.gmail_app_password = os.getenv('gmail_app_password')
+        self.openai_secret_key = os.getenv('OPENAI_SECRET_KEY')
+        self.gmail_address = os.getenv('GMAIL_ADDRESS')
+        self.gmail_app_password = os.getenv('GMAIL_APP_PASSWORD')
         self.gpt_auto_replied = 'gpt-auto-replied'
-        self.check_every_n_seconds = int(os.getenv('check_every_n_seconds', 300))  # Default to 5 minutes if not set
-        self.how_many_days_ago = int(os.getenv('how_many_days_ago', 0))  # Default to check today's emails only
+        self.check_every_n_seconds = int(os.getenv('CHECK_EVERY_N_SECONDS', 300))  # Default to 5 minutes if not set
+        self.how_many_days_ago = int(os.getenv('HOW_MANY_DAYS_AGO', 0))  # Default to check today's emails only
         
         # Load prompt settings from CSV
         self.prompt_settings = self.load_prompt_settings()
@@ -51,12 +51,17 @@ class EmailAutoResponder:
         self.sg = sendgrid.SendGridAPIClient(api_key=self.sendgrid_api_key)
         
         # List of sender emails for round-robin
-        self.from_emails = ["mykhailoivanov97@gmail.com", "imvm2007@gmail.com"]
+        # Get from_emails as a list from the .env file
+        from_emails_string = os.getenv('FROM_EMAILS')
+        if from_emails_string:
+            self.from_emails = [email.strip() for email in from_emails_string.split(',')]
+        else:
+            self.from_emails = []  # Default to an empty list if not provided
         self.current_sender_index = 0
+        logging.debug(f'61, from emails list {self.from_emails}', self.from_emails)
 
-        logging.info('57, Initiating chatgpt gmail script...')
         self.check_minutes = round(self.check_every_n_seconds / 60, 1)
-        logging.info('59, Init is done.')
+        logging.info('64, Init is done.')
 
     def load_prompt_settings(self):
         prompt_settings = []
@@ -64,13 +69,13 @@ class EmailAutoResponder:
             reader = csv.reader(csvfile)
             for row in reader:
                 prompt_settings.append(row)
-        logging.debug(f'67,Loaded prompt settings: {prompt_settings}/n')
+        logging.debug(f'72,Loaded prompt settings: {prompt_settings}/n')
         return prompt_settings
 
     def get_next_sender_email(self):
         email = self.from_emails[self.current_sender_index]
         self.current_sender_index = (self.current_sender_index + 1) % len(self.from_emails)
-        logging.debug(f'72 ,Next sender email for sendgrid: {email}')
+        logging.debug(f'78 ,Next sender email for sendgrid: {email}')
         return email
 
     def send_gmail(self, receiver_address, mail_subject, mail_content):
@@ -109,7 +114,7 @@ class EmailAutoResponder:
                 mail.logout()
                 sleep(self.check_every_n_seconds)
             except Exception as e:
-                logging.error(f"112, An error occurred: {e}")
+                logging.error(f"118, An error occurred: {e}")
                 input("Please exit the window and restart the program...")
                 break
 
@@ -128,7 +133,7 @@ class EmailAutoResponder:
             email_filter = row[1].split(';')[0].strip()
             subject_filter = ';'.join(row[1].split(';')[1:]).strip()
             _, search_data = mail.search(None, f'(SINCE "{date_str}" FROM "{email_filter}" SUBJECT "{subject_filter}")')
-        logging.debug(f'130 Search data: {search_data}')
+        logging.debug(f'136 Search data: {search_data}')
         return search_data
 
     def handle_search_results(self, row, mail, search_data):
