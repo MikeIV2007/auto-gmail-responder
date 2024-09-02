@@ -17,7 +17,7 @@ import logging  # Import the logging module
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,  # Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    level=logging.DEBUG,  # Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
     format='%(asctime)s - %(levelname)s - %(message)s',  # Customize the log message format
     handlers=[
         logging.FileHandler("email_autoresponder.log",  mode="w"),  # Log to a file with mode "w"(rewrite)
@@ -120,6 +120,7 @@ class EmailAutoResponder:
 
     def process_prompt(self, row, mail, date_str):
         search_data = self.perform_search(row, mail, date_str)
+        logging.info(f'123, Email search data: {search_data}')
         if search_data and len(search_data[0].split()) > 0:
             self.handle_search_results(row, mail, search_data)
 
@@ -138,7 +139,10 @@ class EmailAutoResponder:
 
     def handle_search_results(self, row, mail, search_data):
         for num in search_data[0].split():
+            logging.debug(f'142, num in search data: {num}')
             typ, response_data = mail.fetch(num, '(RFC822)')
+            logging.debug(f'144,Typ:{typ}; Response data: {response_data} ')
+
             if isinstance(response_data[0], tuple):
                 msg = email.message_from_bytes(response_data[0][1])
                 body = self.get_email_body(response_data)
@@ -188,9 +192,9 @@ class EmailAutoResponder:
             logging.info('183, Generated response from ChatGPT')
             return response['choices'][0]['message']['content']
         except openai.OpenAIError as e:
-            logging.error(f"186, OpenAI error: {e}")
+            logging.error(f"195, OpenAI error: {e}")
         except Exception as e:
-            logging.error(f"188, Unexpected error: {e}")
+            logging.error(f"197, Unexpected error: {e}")
         return None
 
     def send_response_email(self, msg, message_to_send, mail, num):
@@ -199,7 +203,7 @@ class EmailAutoResponder:
         try:
             self.send_gmail(from_email, subject, message_to_send)
             self.move_email_to_folder(mail, num, self.gpt_auto_replied)
-            logging.debug(f"197, response email sent to", mail)
+            logging.debug(f"206, response email sent to: {mail}")
         except Exception as e:
             logging.error(f"199, Error sending response: {e}")
 
@@ -213,7 +217,7 @@ class EmailAutoResponder:
                 mail
         except Exception as e:
             # print(f"Error moving email: {e}")
-            logging.error(f"211, Error moving email: {e}")
+            logging.error(f"216, Error moving email: {e}")
 
 if __name__ == "__main__":
     responder = EmailAutoResponder()
